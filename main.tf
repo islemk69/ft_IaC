@@ -14,13 +14,11 @@ provider "google" {
 #        NETWORK        #
 #########################
 
-# 1. Le VPC
 resource "google_compute_network" "vpc" {
   name                    = "ft-iac-vpc"
   auto_create_subnetworks = false 
 }
 
-# 2. Le Subnet (Régional)
 resource "google_compute_subnetwork" "subnet" {
   name          = "ft-iac-subnet"
   ip_cidr_range = "10.0.0.0/16"
@@ -28,7 +26,6 @@ resource "google_compute_subnetwork" "subnet" {
   network       = google_compute_network.vpc.id
 }
 
-# 3. Cloud NAT (Internet pour les instances privées)
 resource "google_compute_router" "router" {
   name    = "ft-iac-router"
   network = google_compute_network.vpc.name
