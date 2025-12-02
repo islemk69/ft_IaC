@@ -1,211 +1,165 @@
-provider "aws" {
-  region = "eu-north-1"
-}
+#########################
+#       PROVIDER        #
+#########################
 
-####################
-#        SSH       #
-####################
-
-resource "aws_key_pair" "deployer_key" {
-  key_name   = "cle-pour-terraform"
-  public_key = file("${path.module}/my_tf_key.pub")
-}
-
-####################
-#        VPC       #
-####################
-
-resource "aws_vpc" "main_vpc" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_support = true
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "ft_iac_vpc"
-  }
-}
-
-####################
-#      GATEWAY     #
-####################
-
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main_vpc.id
-
-  tags = {
-    Name = "ft_itac_igw"
-  }
-}
-
-####################
-#      SUBNET      #
-####################
-
-resource "aws_subnet" "public_a" {
-  vpc_id = aws_vpc.main_vpc.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = "eu-north-1a"
-  map_public_ip_on_launch = true
+provider "google" {
+  # Ton ID de projet (ex: ft-iac-project-480013)
+  project = "ft-iac-project-480013" 
   
-  tags = { Name = "public_subnet_a" }
+  region  = "europe-west9" # Paris
+  zone    = "europe-west9-a"
 }
 
-resource "aws_subnet" "public_b" {
-  vpc_id = aws_vpc.main_vpc.id
-  cidr_block = "10.0.2.0/24"
-  availability_zone = "eu-north-1b"
-  map_public_ip_on_launch = true
-  
-  tags = { Name = "public_subnet_b" }
+#########################
+#        NETWORK        #
+#########################
+
+# 1. Le VPC
+resource "google_compute_network" "vpc" {
+  name                    = "ft-iac-vpc"
+  auto_create_subnetworks = false 
 }
 
-resource "aws_subnet" "private_a" {
-  vpc_id = aws_vpc.main_vpc.id
-  cidr_block = "10.0.3.0/24"
-  availability_zone = "eu-north-1a"
-  
-  tags = { Name = "private_subnet_a" }
+# 2. Le Subnet (Régional)
+resource "google_compute_subnetwork" "subnet" {
+  name          = "ft-iac-subnet"
+  ip_cidr_range = "10.0.0.0/16"
+  region        = "europe-west9"
+  network       = google_compute_network.vpc.id
 }
 
-
-resource "aws_subnet" "private_b" {
-  vpc_id = aws_vpc.main_vpc.id
-  cidr_block = "10.0.4.0/24"
-  availability_zone = "eu-north-1b"
-
-  
-  tags = { Name = "private_subnet_b" }
+# 3. Cloud NAT (Internet pour les instances privées)
+resource "google_compute_router" "router" {
+  name    = "ft-iac-router"
+  network = google_compute_network.vpc.name
+  region  = google_compute_subnetwork.subnet.region
 }
 
+resource "google_compute_router_nat" "nat" {
+  name                               = "ft-iac-nat"
+  router                             = google_compute_router.router.name
+  region                             = google_compute_router.router.region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
 
-####################
-#   PUBLIC ROUTE   #
-####################
+#########################
+#       FIREWALL        #
+#########################
 
-resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.main_vpc.id
+# 4. Autoriser SSH et HTTP
+resource "google_compute_firewall" "allow_web" {
+  name    = "allow-web-ssh"
+  network = google_compute_network.vpc.name
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "80"]
   }
 
-  tags = { Name = "public_route_table"}
-}
-
-resource "aws_route_table_association" "public_assoc_a" {
-  subnet_id = aws_subnet.public_a.id
-  route_table_id = aws_route_table.public_rt.id
-}
-
-resource "aws_route_table_association" "public_assoc_b" {
-  subnet_id = aws_subnet.public_b.id
-  route_table_id = aws_route_table.public_rt.id
-}
-
-####################
-#    NAT GATEWAY   #
-####################
-
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-}
-
-resource "aws_nat_gateway" "nat_gw" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id = aws_subnet.public_a.id
-
-  tags = { Name = "main_nat_gateway" }
-
-  depends_on = [ aws_internet_gateway.igw ]
-}
-
-#####################
-#   PRIVATE ROUTE   #
-#####################
-
-resource "aws_route_table" "private_rt" {
-  vpc_id = aws_vpc.main_vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gw.id
-  }
-
-  tags = { Name = "private_route_table"}
-}
-
-resource "aws_route_table_association" "private_assoc_a" {
-  subnet_id = aws_subnet.private_a.id
-  route_table_id = aws_route_table.private_rt.id
-}
-
-resource "aws_route_table_association" "private_assoc_b" {
-  subnet_id = aws_subnet.private_b.id
-  route_table_id = aws_route_table.private_rt.id
-}
-
-output "vpc_id" {
-  value = aws_vpc.main_vpc.id
-}
-
-#####################
-#        AMI        #
-#####################
-
-data "aws_ami" "ubuntu" {
-  most_recent = true
-  owners      = ["099720109477"] # ID du compte Canonical (Editeur officiel Ubuntu)
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
-  }
+  source_ranges = ["0.0.0.0/0", "130.211.0.0/22", "35.191.0.0/16"]
   
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+  target_tags   = ["web-server"]
+}
+
+#########################
+#   INSTANCE TEMPLATE   #
+#########################
+
+resource "google_compute_instance_template" "app_template" {
+  name_prefix  = "ft-iac-template-"
+  machine_type = "e2-micro" 
+  
+  tags = ["web-server"]
+
+  disk {
+    source_image = "ubuntu-os-cloud/ubuntu-2204-lts"
+    auto_delete  = true
+    boot         = true
+  }
+
+  network_interface {
+    network    = google_compute_network.vpc.id
+    subnetwork = google_compute_subnetwork.subnet.id
+  }
+
+  metadata_startup_script = file("${path.module}/scripts/user_data.sh")
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
+#########################
+#    AUTOSCALING (MIG)  #
+#########################
 
+resource "google_compute_region_instance_group_manager" "app_mig" {
+  name               = "ft-iac-mig"
+  base_instance_name = "ft-iac-app"
+  region             = "europe-west9"
 
-# output "server_public_ip" {
-#   value = aws_instance.test_server.public_ip
-# }
+  version {
+    instance_template = google_compute_instance_template.app_template.id
+  }
 
+  named_port {
+    name = "http"
+    port = 80
+  }
 
+  target_size  = 2
+}
 
+##################################
+#   LOAD BALANCER (GLOBAL HTTP)  #
+##################################
 
+resource "google_compute_health_check" "hc" {
+  name               = "ft-iac-hc-global"
+  check_interval_sec = 5
+  timeout_sec        = 5
+  
+  http_health_check {
+    port = 80
+  }
+}
 
-# resource "aws_security_group" "allow_ssh" {
-#   name        = "allow_ssh_traffic"
-#   description = "Allow SSH inbound"
+resource "google_compute_backend_service" "backend" {
+  name                  = "ft-iac-backend-global"
+  protocol              = "HTTP"
+  load_balancing_scheme = "EXTERNAL"
+  timeout_sec           = 10
+  health_checks         = [google_compute_health_check.hc.id]
 
-#   ingress {
-#     description = "SSH from anywhere"
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"] 
-#   }
+  backend {
+    group           = google_compute_region_instance_group_manager.app_mig.instance_group
+    balancing_mode  = "UTILIZATION"
+    max_utilization = 0.8
+    capacity_scaler = 1.0
+  }
+}
 
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-# }
+resource "google_compute_url_map" "lb" {
+  name            = "ft-iac-lb-global"
+  default_service = google_compute_backend_service.backend.id
+}
 
-# resource "aws_instance" "test_server" {
-#   ami           = "ami-0fa91bc90632c73c9" 
-#   instance_type = "t3.micro"              
+resource "google_compute_target_http_proxy" "proxy" {
+  name    = "ft-iac-proxy-global"
+  url_map = google_compute_url_map.lb.id
+}
 
-#   key_name      = aws_key_pair.deployer_key.key_name
-#   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+resource "google_compute_global_forwarding_rule" "frontend" {
+  name       = "ft-iac-frontend-global"
+  target     = google_compute_target_http_proxy.proxy.id
+  port_range = "80"
+}
 
-#   tags = {
-#     Name = "HelloWorld-Terraform"
-#   }
-# }
+#########################
+#       OUTPUTS         #
+#########################
+
+output "load_balancer_ip" {
+  value = google_compute_global_forwarding_rule.frontend.ip_address
+}
