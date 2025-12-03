@@ -34,7 +34,16 @@ DATABASE_PASSWORD=${DB_PASS}
 DATABASE_NAME=${DB_NAME}
 EOF
 
-docker run -d -p 80:80 --name test-app nginxdemos/hello
-echo "Test application launched." >> /var/log/cloud-init-output.log
+docker run -d -p 80:3000 \
+  -e MYSQL_HOST=${DB_HOST} \
+  -e MYSQL_USER=${DB_USER} \
+  -e MYSQL_PASSWORD=${DB_PASS} \
+  -e MYSQL_DATABASE=${DB_NAME} \
+  -e MYSQL_PORT=3306 \
+  -e DB_INIT_SYNC=true \
+  --name my-app \
+  iksm69/ft_iac_app:v1
+
+echo "Application launched." >> /var/log/cloud-init-output.log
 
 echo "User-data script finished successfully." >> /var/log/cloud-init-output.log

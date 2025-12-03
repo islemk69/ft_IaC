@@ -132,12 +132,12 @@ resource "google_compute_region_autoscaler" "app_autoscaler" {
 ##################################
 
 resource "google_compute_health_check" "hc" {
-  name               = "ft-iac-hc-global"
-  check_interval_sec = 5
-  timeout_sec        = 5
+  name = "ft-iac-hc-global"
+  # ...
   
   http_health_check {
-    port = 80
+    port         = 80
+    request_path = "/health/liveness" 
   }
 }
 
