@@ -25,6 +25,15 @@ echo "Docker service started and enabled." >> /var/log/cloud-init-output.log
 sleep 10 
 echo "Checking docker status..." >> /var/log/cloud-init-output.log
 
+echo "Creating .env file..." >> /var/log/cloud-init-output.log
+
+cat <<EOF > /env.txt
+DATABASE_HOST=${DB_HOST}
+DATABASE_USER=${DB_USER}
+DATABASE_PASSWORD=${DB_PASS}
+DATABASE_NAME=${DB_NAME}
+EOF
+
 docker run -d -p 80:80 --name test-app nginxdemos/hello
 echo "Test application launched." >> /var/log/cloud-init-output.log
 

@@ -3,11 +3,10 @@
 #########################
 
 provider "google" {
-  # Ton ID de projet (ex: ft-iac-project-480013)
   project = "ft-iac-project-480013" 
   
-  region  = "europe-west9" # Paris
-  zone    = "europe-west9-a"
+  region  = "us-central1"
+  zone    = "us-central1-a"
 }
 
 #########################
@@ -22,7 +21,7 @@ resource "google_compute_network" "vpc" {
 resource "google_compute_subnetwork" "subnet" {
   name          = "ft-iac-subnet"
   ip_cidr_range = "10.0.0.0/16"
-  region        = "europe-west9"
+  region        = "us-central1"
   network       = google_compute_network.vpc.id
 }
 
@@ -65,7 +64,7 @@ resource "google_compute_firewall" "allow_web" {
 
 resource "google_compute_instance_template" "app_template" {
   name_prefix  = "ft-iac-template-"
-  machine_type = "e2-micro" 
+  machine_type = "e2-small" 
   
   tags = ["web-server"]
 
@@ -80,7 +79,12 @@ resource "google_compute_instance_template" "app_template" {
     subnetwork = google_compute_subnetwork.subnet.id
   }
 
-  metadata_startup_script = file("${path.module}/scripts/user_data.sh")
+  metadata_startup_script = templatefile("${path.module}/scripts/user_data.sh", {
+    DB_HOST = google_sql_database_instance.instance.private_ip_address
+    DB_USER = google_sql_user.users.name
+    DB_PASS = google_sql_user.users.password
+    DB_NAME = google_sql_database.database.name
+  })
 
   lifecycle {
     create_before_destroy = true
@@ -94,7 +98,7 @@ resource "google_compute_instance_template" "app_template" {
 resource "google_compute_region_instance_group_manager" "app_mig" {
   name               = "ft-iac-mig"
   base_instance_name = "ft-iac-app"
-  region             = "europe-west9"
+  region             = "us-central1"
 
   version {
     instance_template = google_compute_instance_template.app_template.id
@@ -105,7 +109,22 @@ resource "google_compute_region_instance_group_manager" "app_mig" {
     port = 80
   }
 
-  target_size  = 2
+}
+
+resource "google_compute_region_autoscaler" "app_autoscaler" {
+  name   = "ft-iac-autoscaler"
+  region = "us-central1"
+  target = google_compute_region_instance_group_manager.app_mig.id
+
+  autoscaling_policy {
+    max_replicas    = 4  
+    min_replicas    = 2 
+    cooldown_period = 60 
+
+    cpu_utilization {
+      target = 0.6 
+    }
+  }
 }
 
 ##################################
@@ -151,6 +170,57 @@ resource "google_compute_global_forwarding_rule" "frontend" {
   name       = "ft-iac-frontend-global"
   target     = google_compute_target_http_proxy.proxy.id
   port_range = "80"
+}
+
+#########################
+#      CLOUD SQL        #
+#########################
+
+resource "google_compute_global_address" "private_ip_address" {
+  name          = "ft-iac-private-ip"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = google_compute_network.vpc.id
+}
+
+resource "google_service_networking_connection" "private_vpc_connection" {
+  network                 = google_compute_network.vpc.id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
+}
+
+resource "random_id" "db_name_suffix" {
+  byte_length = 4
+}
+
+resource "google_sql_database_instance" "instance" {
+  name             = "ft-iac-db-${random_id.db_name_suffix.hex}"
+  region           = "us-central1"
+  database_version = "MYSQL_8_0"
+
+  depends_on = [google_service_networking_connection.private_vpc_connection]
+
+  settings {
+    tier = "db-f1-micro"
+    
+    ip_configuration {
+      ipv4_enabled    = false #
+      private_network = google_compute_network.vpc.id
+    }
+  }
+  deletion_protection = false 
+}
+
+resource "google_sql_database" "database" {
+  name     = "ft_iac_db"
+  instance = google_sql_database_instance.instance.name
+}
+
+resource "google_sql_user" "users" {
+  name     = "ft_iac_user"
+  instance = google_sql_database_instance.instance.name
+  password = "password42!"
 }
 
 #########################
