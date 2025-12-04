@@ -1,0 +1,5 @@
+gcp_project_id = "ft-iac-project-480013"
+gcp_region     = "us-central1"
+gcp_zone       = "us-central1-a"
+machine_type   = "small"       
+db_password    = "password42!"

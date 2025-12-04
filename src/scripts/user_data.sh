@@ -42,7 +42,7 @@ docker run -d -p 80:3000 \
   -e MYSQL_PORT=3306 \
   -e DB_INIT_SYNC=true \
   --name my-app \
-  iksm69/ft_iac_app:v1
+  iksm69/ft_iac_app:latest
 
 echo "Application launched." >> /var/log/cloud-init-output.log
 
