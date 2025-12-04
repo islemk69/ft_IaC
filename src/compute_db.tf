@@ -1,4 +1,3 @@
-# --- LOGIQUE D'ABSTRACTION DES INSTANCES ---
 locals {
   machine_type_map = {
     "small"  = "e2-small"
@@ -8,16 +7,12 @@ locals {
   selected_machine_type = lookup(local.machine_type_map, var.machine_type, "e2-small")
 }
 
-# ----------------------------------------------------
-# A. CLOUD SQL (BASE DE DONNÉES) - Le bloc doit être en haut pour être lu en premier
-# ----------------------------------------------------
-
 resource "google_compute_global_address" "private_ip_address" {
   name          = "ft-iac-private-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.vpc.id # Référence à network.tf
+  network       = google_compute_network.vpc.id
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
@@ -32,7 +27,7 @@ resource "random_id" "db_name_suffix" {
 
 resource "google_sql_database_instance" "instance" {
   name             = "ft-iac-db-${random_id.db_name_suffix.hex}"
-  region           = var.gcp_region # Utilise la variable
+  region           = var.gcp_region
   database_version = "MYSQL_8_0"
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
@@ -55,12 +50,8 @@ resource "google_sql_database" "database" {
 resource "google_sql_user" "users" {
   name     = "ft_iac_user"
   instance = google_sql_database_instance.instance.name
-  password = var.db_password # Utilise la variable
+  password = var.db_password
 }
-
-# ----------------------------------------------------
-# B. COMPUTE (Les ressources qui dépendent de la DB)
-# ----------------------------------------------------
 
 resource "google_compute_instance_template" "app_template" {
   name_prefix  = "ft-iac-template-"
@@ -79,7 +70,6 @@ resource "google_compute_instance_template" "app_template" {
     subnetwork = google_compute_subnetwork.subnet.id
   }
 
-  # LES RÉFÉRENCES NE SONT PLUS CASSÉES CAR ELLES SONT DANS LE MÊME FICHIER
   metadata_startup_script = templatefile("${path.module}/scripts/user_data.sh", {
     DB_HOST = google_sql_database_instance.instance.private_ip_address
     DB_USER = google_sql_user.users.name
