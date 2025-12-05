@@ -1,5 +1,5 @@
-gcp_project_id = "ft-iac-project-480013"
+gcp_project_id = "your-project-id"
 gcp_region     = "us-central1"
 gcp_zone       = "us-central1-a"
 machine_type   = "small"       
-db_password    = "password42!"
+db_password    = "CHANGE_ME"
