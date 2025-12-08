@@ -2,7 +2,7 @@ resource "google_compute_health_check" "hc" {
   name               = "ft-iac-hc-global"
   check_interval_sec = 5
   timeout_sec        = 5
-  
+
   http_health_check {
     port         = 80
     request_path = "/health/liveness"
@@ -17,7 +17,7 @@ resource "google_compute_backend_service" "backend" {
   health_checks         = [google_compute_health_check.hc.id]
 
   backend {
-    group           = google_compute_region_instance_group_manager.app_mig.instance_group
+    group           = var.instance_group
     balancing_mode  = "UTILIZATION"
     max_utilization = 0.8
     capacity_scaler = 1.0
