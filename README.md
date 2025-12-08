@@ -1,78 +1,85 @@
-➜  ft_IaC git:(main) cat README.md 
-Phase 1 : Setup et "Hello World"
+# Ft_IaC - Infrastructure as Code (GCP)
 
-    Installe Terraform et configure AWS CLI sur ta machine.
+This project deploys a highly available, scalable web application infrastructure on Google Cloud Platform using Terraform.
 
-    Crée un fichier main.tf.
+## 🏗 Architecture
 
-    Objectif : Déployer une simple instance EC2 via Terraform, s'y connecter en SSH, puis la détruire (terraform destroy).
+The infrastructure acts as a transparent layer for the application, ensuring High Availability (HA) and Security.
 
-Phase 2 : Le Réseau (VPC) - Crucial car "Modules externes interdits"
+```mermaid
+graph TD
+    User[User / Internet] -->|HTTP:80| LB[Global HTTP Load Balancer]
+    LB -->|Health Checks| MIG[Managed Instance Group]
+    
+    subgraph GCP Region (e.g., us-central1)
+        subgraph VPC Network
+            subgraph Private Subnet
+                MIG -->|Auto Scaling (2-4 nodes)| VM1[App Instance 1]
+                MIG --> VM2[App Instance 2]
+                NAT[Cloud NAT] -.->|Outbound Internet| VM1
+                NAT -.->|Outbound Internet| VM2
+            end
+            
+            subgraph Data Layer
+                VM1 -->|Private IP| SQL[(Cloud SQL - MySQL)]
+                VM2 -->|Private IP| SQL
+            end
+        end
+    end
+    
+    Monitoring[Cloud Monitoring] -.->|Alerting > 80% CPU| Email[Email Notification]
+```
 
-Tu dois construire ton réseau "à la main".
+### Key Components
+- **Global Load Balancer**: Distributes traffic to healthy instances.
+- **Auto-Scaling Group**: Automatically adjusts between 2 and 4 instances based on CPU load.
+- **Cloud SQL**: Managed MySQL 8.0 instance with Private IP only (no public access).
+- **Cloud NAT**: Allows private instances to access the internet (for updates/installations) without exposing them.
+- **Monitoring**: Alerts triggers via Email if CPU usage exceeds defined threshold.
 
-    Crée un VPC.
+## 🚀 Usage
 
-    Crée des Subnets Publics (pour le Load Balancer) et des Subnets Privés (pour tes serveurs EC2 et ta DB).
+### Prerequisites
+- Google Cloud Platform account with billing enabled.
+- `gcloud` CLI installed and authenticated (`gcloud auth application-default login`).
+- `terraform` installed.
 
-    Configure l'Internet Gateway et les Route Tables pour que tes serveurs privés puissent accéder à internet (pour télécharger les paquets/updates) via un NAT Gateway (attention, le NAT Gateway coûte cher, pense à l'éteindre quand tu ne travailles pas !).
+### Configuration
+1. **Initialize** the project:
+   ```bash
+   cd src
+   terraform init
+   ```
 
-Phase 3 : L'Application et l'Image (AMI)
+2. **Configure Variables**:
+   Copy the example variables file:
+   ```bash
+   cp terraform.tfvars.example terraform.tfvars
+   ```
+   Edit `terraform.tfvars`:
+   - Set your `gcp_project_id`.
+   - **Important**: Choose a strong `db_password`.
+   - Configure `alert_email` for notifications.
 
-Pour que l'auto-scaling fonctionne, tes serveurs doivent se configurer tout seuls au démarrage.
+3. **Deploy**:
+   ```bash
+   terraform apply
+   ```
 
-    Utilise les Launch Templates AWS.
+### Inputs (Simplified)
+| Variable | Description | Options | Default |
+|----------|-------------|---------|---------|
+| `gcp_region` | Deployment Region | `US`, `Europe`, `Asia` | `US` |
+| `machine_type` | Instance Size | `small`, `medium`, `large` | `small` |
 
-    Utilise le champ user_data (script bash lancé au démarrage de l'EC2) pour :
+## 🛡 Security & Compliance
+- **Secrets Management**: `terraform.tfvars` is git-ignored. Database passwords are changed via variables, never hardcoded.
+- **Network Isolation**: Database and App instances have **no public IPs**.
+- **Least Privilege**: Application connects to DB via specific user credentials.
 
-        Installer Docker & Docker Compose.
-
-        Cloner le repo de l'app ou récupérer l'image Docker.
-
-        Lancer l'app.
-
-    Astuce Cloud-1 : Tu peux réutiliser une partie de ta logique Ansible ici, ou simplement convertir tes tâches Ansible en script Bash pour le user_data.
-
-Phase 4 : Haute Disponibilité (Le cœur du sujet)
-
-    Déploie un Application Load Balancer (ALB) dans les subnets publics.
-
-    Crée un Auto Scaling Group (ASG) qui utilise ton Launch Template.
-
-    Configure l'ASG pour lancer minimum 2 instances dans des subnets privés différents (Zones de disponibilité A et B).
-
-    Attache l'ALB à l'ASG.
-
-    Test : Tue une instance EC2 via la console AWS. L'ASG doit en recréer une nouvelle automatiquement.
-
-Phase 5 : Persistance des Données & Base de Données
-
-    L'app a besoin d'une DB commune pour que les données soient synchronisées.
-
-    Déploie une instance RDS (ex: MySQL ou PostgreSQL selon l'app fournie).
-
-    Injecte l'endpoint (URL) de la RDS dans tes instances EC2 via des variables d'environnement dans le user_data.
-
-    Sécurité : Le Security Group de la RDS ne doit accepter que le trafic venant du Security Group de tes EC2 (pas d'accès public !).
-
-Phase 6 : Abstraction et Variables (Le point "Architecture")
-
-Le sujet demande de simplifier la config .
-
-    Crée un fichier variables.tf.
-
-    Crée une map pour traduire les tailles. Ex: Si l'user met size = "small", Terraform traduit en t2.micro. Si size = "large", traduit en t3.large.
-
-    Fais pareil pour les régions ("Paris" -> "eu-west-3").
-
-Phase 7 : Monitoring et Alerting
-
-    Utilise CloudWatch pour surveiller le CPU de tes instances.
-
-    Configure SNS (Simple Notification Service) pour t'envoyer un email si l'alarme CPU se déclenche ou si une instance échoue au health check.
-
-Phase 8 : Documentation et Coûts
-
-    Génère un schéma de ton infra (tu peux utiliser des outils comme draw.io ou des générateurs automatiques liés à Terraform).
-
-    Vérifie que tu restes dans le "Free Tier" autant que possible. N'oublie pas : "cattle, not pets" shut down your servers when you're not working. Un terraform destroy chaque soir est ton meilleur ami pour le portefeuille.%         # ft_IaC
+## 🧹 Cleanup
+To destroy the infrastructure and stop billing:
+```bash
+terraform destroy
+```
+*Note: If `service_networking_connection` fails to delete due to dependencies, run `terraform state rm google_service_networking_connection.private_vpc_connection` and try again.*
