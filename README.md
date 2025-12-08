@@ -6,29 +6,9 @@ This project deploys a highly available, scalable web application infrastructure
 
 The infrastructure acts as a transparent layer for the application, ensuring High Availability (HA) and Security.
 
-```mermaid
-graph TD
-    User[User / Internet] -->|HTTP:80| LB[Global HTTP Load Balancer]
-    LB -->|Health Checks| MIG[Managed Instance Group]
-    
-    subgraph GCP_Region ["GCP Region (e.g., us-central1)"]
-        subgraph VPC Network
-            subgraph Private Subnet
-                MIG -->|"Auto Scaling (2-4 nodes)"| VM1[App Instance 1]
-                MIG --> VM2[App Instance 2]
-                NAT[Cloud NAT] -.->|Outbound Internet| VM1
-                NAT -.->|Outbound Internet| VM2
-            end
-            
-            subgraph Data Layer
-                VM1 -->|Private IP| SQL[(Cloud SQL - MySQL)]
-                VM2 -->|Private IP| SQL
-            end
-        end
-    end
-    
-    Monitoring[Cloud Monitoring] -.->|Alerting > 80% CPU| Email[Email Notification]
-```
+
+![infrastructure architecture](iac_arch.png)
+
 
 ### Key Components
 - **Global Load Balancer**: Distributes traffic to healthy instances.
