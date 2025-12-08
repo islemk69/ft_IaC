@@ -4,9 +4,9 @@ variable "gcp_project_id" {
 }
 
 variable "gcp_region" {
-  description = "La région par défaut pour les ressources"
+  description = "La région de déploiement (Ex: Paris, Frankfurt, US)"
   type        = string
-  default     = "us-central1"
+  default     = "US"
 }
 
 variable "gcp_zone" {
@@ -25,4 +25,9 @@ variable "db_password" {
   description = "Mot de passe de la base de données"
   type        = string
   sensitive   = true 
+}
+
+variable "alert_email" {
+  description = "Email address for alerts"
+  type        = string
 }

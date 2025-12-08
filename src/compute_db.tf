@@ -1,11 +1,4 @@
-locals {
-  machine_type_map = {
-    "small"  = "e2-small"
-    "medium" = "e2-medium"
-    "large"  = "e2-standard-2"
-  }
-  selected_machine_type = lookup(local.machine_type_map, var.machine_type, "e2-small")
-}
+
 
 resource "google_compute_global_address" "private_ip_address" {
   name          = "ft-iac-private-ip"
@@ -27,7 +20,7 @@ resource "random_id" "db_name_suffix" {
 
 resource "google_sql_database_instance" "instance" {
   name             = "ft-iac-db-${random_id.db_name_suffix.hex}"
-  region           = var.gcp_region
+  region           = local.selected_region
   database_version = "MYSQL_8_0"
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
@@ -85,7 +78,7 @@ resource "google_compute_instance_template" "app_template" {
 resource "google_compute_region_instance_group_manager" "app_mig" {
   name               = "ft-iac-mig"
   base_instance_name = "ft-iac-app"
-  region             = var.gcp_region
+  region             = local.selected_region
 
   version {
     instance_template = google_compute_instance_template.app_template.id
@@ -99,7 +92,7 @@ resource "google_compute_region_instance_group_manager" "app_mig" {
 
 resource "google_compute_region_autoscaler" "app_autoscaler" {
   name   = "ft-iac-autoscaler"
-  region = var.gcp_region
+  region = local.selected_region
   target = google_compute_region_instance_group_manager.app_mig.id
 
   autoscaling_policy {
