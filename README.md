@@ -14,7 +14,7 @@ graph TD
     subgraph GCP_Region ["GCP Region (e.g., us-central1)"]
         subgraph VPC Network
             subgraph Private Subnet
-                MIG -->|Auto Scaling (2-4 nodes)| VM1[App Instance 1]
+                MIG -->|"Auto Scaling (2-4 nodes)"| VM1[App Instance 1]
                 MIG --> VM2[App Instance 2]
                 NAT[Cloud NAT] -.->|Outbound Internet| VM1
                 NAT -.->|Outbound Internet| VM2
