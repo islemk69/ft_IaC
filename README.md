@@ -11,7 +11,7 @@ graph TD
     User[User / Internet] -->|HTTP:80| LB[Global HTTP Load Balancer]
     LB -->|Health Checks| MIG[Managed Instance Group]
     
-    subgraph GCP Region (e.g., us-central1)
+    subgraph GCP_Region ["GCP Region (e.g., us-central1)"]
         subgraph VPC Network
             subgraph Private Subnet
                 MIG -->|Auto Scaling (2-4 nodes)| VM1[App Instance 1]
