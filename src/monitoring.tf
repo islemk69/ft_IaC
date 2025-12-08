@@ -19,7 +19,7 @@ resource "google_monitoring_alert_policy" "high_cpu" {
         alignment_period   = "60s"
         per_series_aligner = "ALIGN_MEAN"
       }
-      threshold_value = 0.08
+      threshold_value = 0.8
     }
   }
 
