@@ -1,4 +1,21 @@
+# .terraform (provider binaries, external module source code, …)
 .terraform/
-*.tfstate
-*.tfvars
 
+# Variable files
+*.tfvars
+*.tfvars.json
+
+# State files
+*.tfstate
+*.tfstate.*
+
+# Crash log files (if you run Terraform locally)
+crash.log
+crash.*.log
+
+# Terraform CLI configuration files
+.terraformrc
+terraform.rc
+
+# Misc 
+tmp/

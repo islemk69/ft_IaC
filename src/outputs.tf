@@ -8,3 +8,4 @@ output "db_private_ip" {
   value       = module.database.db_instance_ip
   sensitive   = true
 }
+

@@ -1,4 +1,6 @@
 resource "google_compute_instance_template" "app_template" {
+  project                 = var.project_id
+
   name_prefix  = "ft-iac-template-"
   machine_type = var.machine_type
   region       = var.region
@@ -29,6 +31,8 @@ resource "google_compute_instance_template" "app_template" {
 }
 
 resource "google_compute_region_instance_group_manager" "app_mig" {
+  project                 = var.project_id
+
   name               = "ft-iac-mig"
   base_instance_name = "ft-iac-app"
   region             = var.region
@@ -44,6 +48,8 @@ resource "google_compute_region_instance_group_manager" "app_mig" {
 }
 
 resource "google_compute_region_autoscaler" "app_autoscaler" {
+  project                 = var.project_id
+
   name   = "ft-iac-autoscaler"
   region = var.region
   target = google_compute_region_instance_group_manager.app_mig.id

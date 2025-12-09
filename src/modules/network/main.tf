@@ -1,9 +1,13 @@
 resource "google_compute_network" "vpc" {
+  project                 = var.project_id
+
   name                    = "ft-iac-vpc"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet" {
+  project                 = var.project_id
+
   name          = "ft-iac-subnet"
   ip_cidr_range = var.subnet_cidr
   region        = var.region
@@ -11,12 +15,16 @@ resource "google_compute_subnetwork" "subnet" {
 }
 
 resource "google_compute_router" "router" {
+  project                 = var.project_id
+
   name    = "ft-iac-router"
   network = google_compute_network.vpc.name
   region  = var.region
 }
 
 resource "google_compute_router_nat" "nat" {
+  project                 = var.project_id
+	
   name                               = "ft-iac-nat"
   router                             = google_compute_router.router.name
   region                             = google_compute_router.router.region
@@ -25,6 +33,8 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_compute_firewall" "allow_web" {
+  project                 = var.project_id
+
   name    = "allow-web-ssh"
   network = google_compute_network.vpc.name
 
@@ -38,6 +48,8 @@ resource "google_compute_firewall" "allow_web" {
 }
 
 resource "google_compute_global_address" "private_ip_address" {
+  project                 = var.project_id
+
   name          = "ft-iac-private-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
@@ -46,6 +58,7 @@ resource "google_compute_global_address" "private_ip_address" {
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
+
   network                 = google_compute_network.vpc.id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]

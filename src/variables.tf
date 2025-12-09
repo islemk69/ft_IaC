@@ -1,5 +1,5 @@
-variable "gcp_project_id" {
-  description = "L'ID du projet Google Cloud"
+variable "gcp_project_name" {
+  description = "Le nom du projet Google Cloud"
   type        = string
 }
 
@@ -29,5 +29,10 @@ variable "db_password" {
 
 variable "alert_email" {
   description = "Email address for alerts"
+  type        = string
+}
+
+variable "billing_account" {
+  description = "gcloud billing account"
   type        = string
 }
