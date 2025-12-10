@@ -52,7 +52,7 @@ module "loadbalancer" {
 
   project_id   = module.project.project_id
   project_name = var.gcp_project_name
-
+  domain_name  = var.domain_name
   instance_group = module.autoscaling.instance_group
 }
 
