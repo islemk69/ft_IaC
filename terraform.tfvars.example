@@ -1,6 +1,5 @@
 billing_account   = "your-billing-account"
 gcp_project_name  = "your-project-name"
 gcp_region        = "US"
-machine_type      = "small"       
-db_password       = "CHANGE_ME"
+machine_type      = "small"
 alert_email       = "your-email@example.com"

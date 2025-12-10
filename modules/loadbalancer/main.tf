@@ -1,5 +1,5 @@
 resource "google_compute_health_check" "hc" {
-  project = var.project_id
+  project            = var.project_id
   name               = "${var.project_name}-hc-global"
   check_interval_sec = 5
   timeout_sec        = 5
@@ -11,7 +11,7 @@ resource "google_compute_health_check" "hc" {
 }
 
 resource "google_compute_backend_service" "backend" {
-  project = var.project_id
+  project               = var.project_id
   name                  = "${var.project_name}-backend-global"
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL"

@@ -27,7 +27,6 @@ The infrastructure acts as a transparent layer for the application, ensuring Hig
 ### Configuration
 1. **Initialize** the project:
    ```bash
-   cd src
    terraform init
    ```
 
@@ -37,8 +36,8 @@ The infrastructure acts as a transparent layer for the application, ensuring Hig
    cp terraform.tfvars.example terraform.tfvars
    ```
    Edit `terraform.tfvars`:
-   - Set your `gcp_project_id`.
-   - **Important**: Choose a strong `db_password`.
+   - Set your `gcp_project_name`.
+   - **Important**: Choose a strong `db_password`. (use `tools/gen_password.sh`)
    - Configure `alert_email` for notifications.
 
 3. **Deploy**:

@@ -26,12 +26,6 @@ variable "machine_type" {
   default     = "small"
 }
 
-variable "db_password" {
-  description = "Mot de passe de la base de données"
-  type        = string
-  sensitive   = true
-}
-
 variable "alert_email" {
   description = "L'adresse e-mail pour les alertes"
   type        = string
