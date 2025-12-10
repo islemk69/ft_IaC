@@ -1,16 +1,17 @@
 resource "google_compute_network" "vpc" {
-  project                 = var.project_id
+  project = var.project_id
+
   name                    = "${var.project_name}-vpc"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet" {
-  project       = var.project_id
+  project = var.project_id
+
   name          = "${var.project_name}-subnet"
   ip_cidr_range = var.subnet_cidr
   region        = var.region
   network       = google_compute_network.vpc.id
-  # depends_on = [google_compute_network.vpc]
 }
 
 resource "google_compute_router" "router" {
@@ -18,11 +19,11 @@ resource "google_compute_router" "router" {
   name    = "${var.project_name}-router"
   network = google_compute_network.vpc.name
   region  = var.region
-  # depends_on = [google_compute_network.vpc]
 }
 
 resource "google_compute_router_nat" "nat" {
-  project                            = var.project_id
+  project = var.project_id
+
   name                               = "${var.project_name}-nat"
   router                             = google_compute_router.router.name
   region                             = google_compute_router.router.region
@@ -32,7 +33,6 @@ resource "google_compute_router_nat" "nat" {
 
 resource "google_compute_firewall" "allow_web" {
   project = var.project_id
-  # depends_on = [google_compute_network.vpc]
 
   name    = "${var.project_name}-allow-web-ssh"
   network = google_compute_network.vpc.name
@@ -47,17 +47,17 @@ resource "google_compute_firewall" "allow_web" {
 }
 
 resource "google_compute_global_address" "private_ip_address" {
-  project       = var.project_id
+  project = var.project_id
+
   name          = "${var.project_name}-private-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = google_compute_network.vpc.id
-  # depends_on = [google_compute_network.vpc]
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
-  network    = google_compute_network.vpc.id
+  network         = google_compute_network.vpc.id
   deletion_policy = "ABANDON"
 
   service                 = "servicenetworking.googleapis.com"

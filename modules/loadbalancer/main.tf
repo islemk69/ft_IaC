@@ -1,5 +1,6 @@
 resource "google_compute_health_check" "hc" {
-  project            = var.project_id
+  project = var.project_id
+
   name               = "${var.project_name}-hc-global"
   check_interval_sec = 5
   timeout_sec        = 5
@@ -11,7 +12,8 @@ resource "google_compute_health_check" "hc" {
 }
 
 resource "google_compute_backend_service" "backend" {
-  project               = var.project_id
+  project = var.project_id
+
   name                  = "${var.project_name}-backend-global"
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL"
@@ -50,7 +52,8 @@ resource "google_compute_global_forwarding_rule" "frontend" {
 
 resource "google_compute_managed_ssl_certificate" "default" {
   project = var.project_id
-  name    = "${var.project_name}-cert"
+
+  name = "${var.project_name}-cert"
 
   managed {
     domains = [var.domain_name]
@@ -59,6 +62,7 @@ resource "google_compute_managed_ssl_certificate" "default" {
 
 resource "google_compute_target_https_proxy" "default" {
   project = var.project_id
+
   name    = "${var.project_name}-https-proxy"
   url_map = google_compute_url_map.lb.id
   ssl_certificates = [
@@ -68,6 +72,7 @@ resource "google_compute_target_https_proxy" "default" {
 
 resource "google_compute_global_forwarding_rule" "default" {
   project = var.project_id
+
   name       = "${var.project_name}-https-frontend"
   target     = google_compute_target_https_proxy.default.id
   port_range = "443"

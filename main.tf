@@ -14,7 +14,6 @@ module "network" {
 
   region      = local.selected_region
   subnet_cidr = "10.0.1.0/24"
-
 }
 
 module "database" {

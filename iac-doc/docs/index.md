@@ -32,6 +32,7 @@ The Group Instance Manager is used by an Autoscaler to scale the number of insta
 
 ## Deployment
 
+
 ### Prerequisites
 
 - Google Cloud account with billing enabled.
@@ -68,6 +69,7 @@ Region possibles values: `US`, `Paris`, `Frankfurt`
 
 Instances possibles values: `small`, `medium`, `large` 
 
+
 ### Deploy and destroy
 
 Deployment and deletion is done via Terraform cli, for each creative/destructive command, you'll be asked to confirm.
@@ -92,7 +94,6 @@ terraform destroy
 Be careful, *all resources* means the database too.
 
 
-
 ## Code organisation
 
 The `main.tf` is the entrypoint, it load all module and configure them.
@@ -112,8 +113,9 @@ Modules:
 - **network**: the Virtual Private Cloud
 - **project**: the Google Cloud Project, where all resource are created
 
+### Developement
 
-## Dev cheatsheet
+### Cheatsheet
 
 Destroy only some resource with:
 ```bash
@@ -127,3 +129,9 @@ terraform destroy -target module.autoscaling
 
 For some errors when creation, Terraform will loose the track of some resource. These resources need then to be deleted manually, using  `gcloud`.
 A simple way to clear everything is to delete the Google Cloud Project and delete the `terraform.tfstate{.backup}` file(s)
+
+### Providers
+
+[Google Cloud](https://cloud.google.com/?hl=en)
+
+[HashiCorp](https://github.com/hashicorp/terraform-provider-random)
