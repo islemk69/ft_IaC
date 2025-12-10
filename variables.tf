@@ -1,13 +1,12 @@
-variable "gcp_project_name" {
-  description = "Le nom du projet Google Cloud"
-  type        = string
-}
-
 variable "billing_account" {
   description = "Le compte de facturatin Google Cloud"
   type        = string
 }
 
+variable "gcp_project_name" {
+  description = "Le nom du projet Google Cloud"
+  type        = string
+}
 
 variable "gcp_region" {
   description = "La région de déploiement (Ex: Paris, Frankfurt, US)"
@@ -34,6 +33,6 @@ variable "db_password" {
 }
 
 variable "alert_email" {
-  description = "Email address for alerts"
+  description = "L'adresse e-mail pour les alertes"
   type        = string
 }
