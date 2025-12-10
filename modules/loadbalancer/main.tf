@@ -47,3 +47,28 @@ resource "google_compute_global_forwarding_rule" "frontend" {
   target     = google_compute_target_http_proxy.proxy.id
   port_range = "80"
 }
+
+resource "google_compute_managed_ssl_certificate" "default" {
+  project = var.project_id
+  name    = "${var.project_name}-cert"
+
+  managed {
+    domains = [var.domain_name]
+  }
+}
+
+resource "google_compute_target_https_proxy" "default" {
+  project = var.project_id
+  name    = "${var.project_name}-https-proxy"
+  url_map = google_compute_url_map.lb.id
+  ssl_certificates = [
+    google_compute_managed_ssl_certificate.default.id
+  ]
+}
+
+resource "google_compute_global_forwarding_rule" "default" {
+  project = var.project_id
+  name       = "${var.project_name}-https-frontend"
+  target     = google_compute_target_https_proxy.default.id
+  port_range = "443"
+}

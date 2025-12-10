@@ -36,3 +36,8 @@ variable "alert_email" {
   description = "L'adresse e-mail pour les alertes"
   type        = string
 }
+
+variable "domain_name" {
+  description = "Le nom de domaine"
+  type        = string
+}
