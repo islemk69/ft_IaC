@@ -1,5 +1,6 @@
 resource "google_compute_health_check" "hc" {
-  name               = "ft-iac-hc-global"
+  project = var.project_id
+  name               = "${var.project_name}-hc-global"
   check_interval_sec = 5
   timeout_sec        = 5
 
@@ -10,7 +11,8 @@ resource "google_compute_health_check" "hc" {
 }
 
 resource "google_compute_backend_service" "backend" {
-  name                  = "ft-iac-backend-global"
+  project = var.project_id
+  name                  = "${var.project_name}-backend-global"
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL"
   timeout_sec           = 10
@@ -25,17 +27,23 @@ resource "google_compute_backend_service" "backend" {
 }
 
 resource "google_compute_url_map" "lb" {
-  name            = "ft-iac-lb-global"
+  project = var.project_id
+
+  name            = "${var.project_name}-lb-global"
   default_service = google_compute_backend_service.backend.id
 }
 
 resource "google_compute_target_http_proxy" "proxy" {
-  name    = "ft-iac-proxy-global"
+  project = var.project_id
+
+  name    = "${var.project_name}-proxy-global"
   url_map = google_compute_url_map.lb.id
 }
 
 resource "google_compute_global_forwarding_rule" "frontend" {
-  name       = "ft-iac-frontend-global"
+  project = var.project_id
+
+  name       = "${var.project_name}-frontend-global"
   target     = google_compute_target_http_proxy.proxy.id
   port_range = "80"
 }

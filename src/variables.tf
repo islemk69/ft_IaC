@@ -1,7 +1,13 @@
-variable "gcp_project_id" {
-  description = "L'ID du projet Google Cloud"
+variable "gcp_project_name" {
+  description = "Le nom du projet Google Cloud"
   type        = string
 }
+
+variable "billing_account" {
+  description = "Le compte de facturatin Google Cloud"
+  type        = string
+}
+
 
 variable "gcp_region" {
   description = "La région de déploiement (Ex: Paris, Frankfurt, US)"
@@ -24,7 +30,7 @@ variable "machine_type" {
 variable "db_password" {
   description = "Mot de passe de la base de données"
   type        = string
-  sensitive   = true 
+  sensitive   = true
 }
 
 variable "alert_email" {

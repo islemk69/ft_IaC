@@ -1,23 +1,27 @@
 resource "google_compute_network" "vpc" {
-  name                    = "ft-iac-vpc"
+  project = var.project_id
+  name                    = "${var.project_name}-vpc"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet" {
-  name          = "ft-iac-subnet"
+  project = var.project_id
+  name          = "${var.project_name}-subnet"
   ip_cidr_range = var.subnet_cidr
   region        = var.region
   network       = google_compute_network.vpc.id
 }
 
 resource "google_compute_router" "router" {
-  name    = "ft-iac-router"
+  project = var.project_id
+  name    = "${var.project_name}-router"
   network = google_compute_network.vpc.name
   region  = var.region
 }
 
 resource "google_compute_router_nat" "nat" {
-  name                               = "ft-iac-nat"
+  project = var.project_id
+  name                               = "${var.project_name}-nat"
   router                             = google_compute_router.router.name
   region                             = google_compute_router.router.region
   nat_ip_allocate_option             = "AUTO_ONLY"
@@ -25,7 +29,9 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_compute_firewall" "allow_web" {
-  name    = "allow-web-ssh"
+  project = var.project_id
+
+  name    = "${var.project_name}-allow-web-ssh"
   network = google_compute_network.vpc.name
 
   allow {
@@ -38,7 +44,8 @@ resource "google_compute_firewall" "allow_web" {
 }
 
 resource "google_compute_global_address" "private_ip_address" {
-  name          = "ft-iac-private-ip"
+  project = var.project_id
+  name          = "${var.project_name}-private-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16

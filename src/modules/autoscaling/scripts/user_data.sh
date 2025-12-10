@@ -17,22 +17,14 @@ echo "APT update finished." >> /var/log/cloud-init-output.log
 
 apt-get install -y docker.io docker-compose -qqy 
 echo "Docker installed." >> /var/log/cloud-init-output.log
-r
+
 systemctl start docker
 systemctl enable docker
 echo "Docker service started and enabled." >> /var/log/cloud-init-output.log
 
 sleep 10 
-echo "Checking docker status..." >> /var/log/cloud-init-output.log
 
-echo "Creating .env file..." >> /var/log/cloud-init-output.log
-
-cat <<EOF > /env.txt
-DATABASE_HOST=${DB_HOST}
-DATABASE_USER=${DB_USER}
-DATABASE_PASSWORD=${DB_PASS}
-DATABASE_NAME=${DB_NAME}
-EOF
+echo "Launching app..." >> /var/log/cloud-init-output.log
 
 docker run -d -p 80:3000 \
   -e MYSQL_HOST=${DB_HOST} \

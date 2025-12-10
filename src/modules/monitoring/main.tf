@@ -1,4 +1,6 @@
 resource "google_monitoring_notification_channel" "email" {
+  project = var.project_id
+
   display_name = "Email Notification Channel"
   type         = "email"
   labels = {
@@ -7,6 +9,8 @@ resource "google_monitoring_notification_channel" "email" {
 }
 
 resource "google_monitoring_alert_policy" "high_cpu" {
+  project = var.project_id
+  
   display_name = "High CPU Utilization"
   combiner     = "OR"
   conditions {

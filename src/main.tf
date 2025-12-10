@@ -1,5 +1,27 @@
+module "project" {
+  source = "./modules/project"
+
+  project_name    = var.gcp_project_name
+  billing_account = var.billing_account
+}
+
+module "project-services" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "~> 18.2"
+
+  project_id = module.project.project_id
+
+  activate_apis = [
+    "compute.googleapis.com",
+    "servicenetworking.googleapis.com",
+  ]
+}
+
 module "network" {
   source = "./modules/network"
+
+  project_id   = module.project.project_id
+  project_name = var.gcp_project_name
 
   region      = local.selected_region
   subnet_cidr = "10.0.1.0/24"
@@ -7,6 +29,9 @@ module "network" {
 
 module "database" {
   source = "./modules/database"
+
+  project_id   = module.project.project_id
+  project_name = var.gcp_project_name
 
   region      = local.selected_region
   vpc_id      = module.network.vpc_id
@@ -17,6 +42,9 @@ module "database" {
 
 module "autoscaling" {
   source = "./modules/autoscaling"
+
+  project_id   = module.project.project_id
+  project_name = var.gcp_project_name
 
   region       = local.selected_region
   machine_type = local.selected_machine_type
@@ -32,5 +60,16 @@ module "autoscaling" {
 module "loadbalancer" {
   source = "./modules/loadbalancer"
 
+  project_id   = module.project.project_id
+  project_name = var.gcp_project_name
+
   instance_group = module.autoscaling.instance_group
+}
+
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  project_id  = module.project.project_id
+  alert_email = var.alert_email
 }

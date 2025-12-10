@@ -3,7 +3,9 @@ resource "random_id" "db_name_suffix" {
 }
 
 resource "google_sql_database_instance" "instance" {
-  name             = "ft-iac-db-${random_id.db_name_suffix.hex}"
+  project = var.project_id
+
+  name             = "${var.project_name}-db-${random_id.db_name_suffix.hex}"
   region           = var.region
   database_version = "MYSQL_8_0"
 
@@ -18,12 +20,16 @@ resource "google_sql_database_instance" "instance" {
 }
 
 resource "google_sql_database" "database" {
-  name     = "ft_iac_db"
+  project = var.project_id
+
+  name     = "${var.project_name}-db"
   instance = google_sql_database_instance.instance.name
 }
 
 resource "google_sql_user" "users" {
-  name     = "ft_iac_user"
+  project = var.project_id
+
+  name     = "${var.project_name}-user"
   instance = google_sql_database_instance.instance.name
   password = var.db_password
 }

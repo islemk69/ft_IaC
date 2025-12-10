@@ -1,3 +1,7 @@
+output "project_id" {
+  value = module.project.project_id
+}
+
 output "load_balancer_ip" {
   description = "The public IP of the Load Balancer"
   value       = module.loadbalancer.lb_ip
