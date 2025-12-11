@@ -1,6 +1,8 @@
-# Module Autoscaling
+# Autoscaling
 
 This Module manage the compute instance. It use an Autoscaler and a Group Instance Manager to create and configure instance based on the current needs.
+
+<br>
 
 ## Required variables
 
@@ -16,6 +18,8 @@ This Module manage the compute instance. It use an Autoscaler and a Group Instan
 - `db_user`: database user
 - `db_password`: database password
 - `db_name`: database name
+
+<br>
 
 ## Resources
 

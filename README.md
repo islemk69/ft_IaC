@@ -31,6 +31,7 @@ The infrastructure acts as a transparent layer for the application, ensuring Hig
 Build and serve doc locally using mkdocs
 ```bash
 cd iac-doc
+pip install -r requirements.txt
 mkdocs build
 mkdocs serve
 ```

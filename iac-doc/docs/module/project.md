@@ -1,11 +1,15 @@
-# Module Project
+# Project
 
 This module allow the creation of a Google Cloud Project, based on a name supplied by user.
+
+<br>
 
 ## Required variables
 
 - `project_name`: a name for the project, the project id is computed from
 - `billing_account`: the Google Cloud billing account, needed for API activation
+
+<br>
 
 ## Resources
 
