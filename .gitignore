@@ -19,3 +19,5 @@ terraform.rc
 
 # Misc 
 tmp/
+site/
+.vscode

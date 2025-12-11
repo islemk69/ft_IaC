@@ -10,12 +10,30 @@ resource "google_project" "project" {
   deletion_policy     = "DELETE"
 }
 
-# variable "services" {
-#   type = list(string)
-# }
+resource "google_project_service" "compute_api" {
+  project = google_project.project.project_id
 
-# resource "google_project_service" "services" {
-#   project = google_project.project.project_id
-#   for_each = toset(var.services)
-#   service = each.value
-# }
+  service            = "compute.googleapis.com"
+  disable_on_destroy = true
+}
+
+resource "google_project_service" "networks_api" {
+  project = google_project.project.project_id
+
+  service            = "servicenetworking.googleapis.com"
+  disable_on_destroy = true
+}
+
+resource "google_project_service" "domains_api" {
+  project = google_project.project.project_id
+
+  service            = "domains.googleapis.com"
+  disable_on_destroy = true
+}
+
+resource "google_project_service" "dns_api" {
+  project = google_project.project.project_id
+
+  service            = "dns.googleapis.com"
+  disable_on_destroy = true
+}
