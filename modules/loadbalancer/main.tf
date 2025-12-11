@@ -1,5 +1,12 @@
+resource "google_compute_global_address" "default" {
+  project      = var.project_id
+  name         = "${var.project_name}-ip"
+  address_type = "EXTERNAL"
+  ip_version   = "IPV4"
+}
+
 resource "google_compute_health_check" "hc" {
-  project = var.project_id
+  project            = var.project_id
   name               = "${var.project_name}-hc-global"
   check_interval_sec = 5
   timeout_sec        = 5
@@ -11,12 +18,18 @@ resource "google_compute_health_check" "hc" {
 }
 
 resource "google_compute_backend_service" "backend" {
-  project = var.project_id
+  project               = var.project_id
   name                  = "${var.project_name}-backend-global"
   protocol              = "HTTP"
   load_balancing_scheme = "EXTERNAL"
   timeout_sec           = 10
+  enable_cdn            = false
+  session_affinity      = "GENERATED_COOKIE"
   health_checks         = [google_compute_health_check.hc.id]
+
+  log_config {
+    enable = true
+  }
 
   backend {
     group           = var.instance_group
@@ -46,6 +59,7 @@ resource "google_compute_global_forwarding_rule" "frontend" {
   name       = "${var.project_name}-frontend-global"
   target     = google_compute_target_http_proxy.proxy.id
   port_range = "80"
+  ip_address = google_compute_global_address.default.address
 }
 
 resource "google_compute_managed_ssl_certificate" "default" {
@@ -67,8 +81,9 @@ resource "google_compute_target_https_proxy" "default" {
 }
 
 resource "google_compute_global_forwarding_rule" "default" {
-  project = var.project_id
+  project    = var.project_id
   name       = "${var.project_name}-https-frontend"
   target     = google_compute_target_https_proxy.default.id
   port_range = "443"
+  ip_address = google_compute_global_address.default.address
 }

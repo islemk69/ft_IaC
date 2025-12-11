@@ -1,0 +1,7 @@
+billing_account   = "your-billing-account"
+gcp_project_name  = "your-project-name"
+gcp_region        = "US"
+machine_type      = "small"       
+db_password       = "test"
+alert_email       = "kaismounislem@outlook.com"
+domain_name       = "sanitraq.fr"
