@@ -11,4 +11,7 @@ output "db_private_ip" {
   description = "The private IP of the Database"
   value       = module.database.db_instance_ip
   sensitive   = true
+}output "ns_records" {
+  description = "Name servers to configure in OVH/Registrar"
+  value       = module.dns.name_servers
 }

@@ -72,4 +72,11 @@ module "monitoring" {
 
   project_id  = module.project.project_id
   alert_email = var.alert_email
+}module "dns" {
+  source = "./modules/dns"
+
+  project_id    = module.project.project_id
+  project_name  = var.gcp_project_name
+  domain_name   = var.domain_name
+  lb_ip_address = module.loadbalancer.lb_ip
 }
