@@ -23,3 +23,17 @@ resource "google_project_service" "networks_api" {
   service            = "servicenetworking.googleapis.com"
   disable_on_destroy = true
 }
+
+resource "google_project_service" "domains_api" {
+  project = google_project.project.project_id
+
+  service            = "domains.googleapis.com"
+  disable_on_destroy = true
+}
+
+resource "google_project_service" "dns_api" {
+  project = google_project.project.project_id
+
+  service            = "dns.googleapis.com"
+  disable_on_destroy = true
+}

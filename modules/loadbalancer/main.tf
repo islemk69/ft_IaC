@@ -42,7 +42,7 @@ resource "google_compute_target_http_proxy" "proxy" {
   url_map = google_compute_url_map.lb.id
 }
 
-resource "google_compute_global_forwarding_rule" "frontend" {
+resource "google_compute_global_forwarding_rule" "http" {
   project = var.project_id
 
   name       = "${var.project_name}-frontend-global"
@@ -60,7 +60,7 @@ resource "google_compute_managed_ssl_certificate" "default" {
   }
 }
 
-resource "google_compute_target_https_proxy" "default" {
+resource "google_compute_target_https_proxy" "proxy" {
   project = var.project_id
 
   name    = "${var.project_name}-https-proxy"
@@ -70,10 +70,10 @@ resource "google_compute_target_https_proxy" "default" {
   ]
 }
 
-resource "google_compute_global_forwarding_rule" "default" {
+resource "google_compute_global_forwarding_rule" "https" {
   project = var.project_id
 
   name       = "${var.project_name}-https-frontend"
-  target     = google_compute_target_https_proxy.default.id
+  target     = google_compute_target_https_proxy.proxy.id
   port_range = "443"
 }

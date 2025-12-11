@@ -1,5 +1,6 @@
-resource "random_id" "db_password" {
-  byte_length = 4
+resource "random_password" "password" {
+  length           = 20
+  special          = false
 }
 
 resource "google_sql_database_instance" "instance" {
@@ -40,5 +41,5 @@ resource "google_sql_user" "users" {
 
   name     = "${var.project_name}-user"
   instance = google_sql_database_instance.instance.name
-  password = random_id.db_password.hex
+  password = random_password.password.result
 }

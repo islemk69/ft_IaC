@@ -4,7 +4,12 @@ output "project_id" {
 
 output "load_balancer_ip" {
   description = "The public IP of the Load Balancer"
-  value       = module.loadbalancer.lb_ip
+  value       = module.loadbalancer.lb_ip_http
+}
+
+output "load_balancer_ip_https" {
+  description = "The public IP of the Load Balancer"
+  value       = module.loadbalancer.lb_ip_https
 }
 
 output "db_private_ip" {

@@ -27,7 +27,7 @@ variable "machine_type" {
 }
 
 variable "alert_email" {
-  description = "L'adresse e-mail pour les alertes"
+  description = "L'addresse e-mail pour les alertes"
   type        = string
 }
 

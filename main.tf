@@ -6,7 +6,7 @@ module "project" {
 }
 
 module "network" {
-  source = "./modules/network"
+  source     = "./modules/network"
   depends_on = [module.project]
 
   project_id   = module.project.project_id
@@ -17,18 +17,18 @@ module "network" {
 }
 
 module "database" {
-  source = "./modules/database"
+  source     = "./modules/database"
   depends_on = [module.network]
 
   project_id   = module.project.project_id
   project_name = var.gcp_project_name
 
-  region      = local.selected_region
-  vpc_id      = module.network.vpc_id
+  region = local.selected_region
+  vpc_id = module.network.vpc_id
 }
 
 module "autoscaling" {
-  source = "./modules/autoscaling"
+  source     = "./modules/autoscaling"
   depends_on = [module.project]
 
   project_id   = module.project.project_id
@@ -46,20 +46,22 @@ module "autoscaling" {
 }
 
 module "loadbalancer" {
-  source = "./modules/loadbalancer"
+  source     = "./modules/loadbalancer"
   depends_on = [module.project]
 
   project_id   = module.project.project_id
   project_name = var.gcp_project_name
-  domain_name  = var.domain_name
+
+  domain_name    = var.domain_name
   instance_group = module.autoscaling.instance_group
 }
 
 
 module "monitoring" {
-  source = "./modules/monitoring"
+  source     = "./modules/monitoring"
   depends_on = [module.project]
 
-  project_id  = module.project.project_id
+  project_id = module.project.project_id
+
   alert_email = var.alert_email
 }
