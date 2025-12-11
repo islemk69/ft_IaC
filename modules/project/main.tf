@@ -24,6 +24,13 @@ resource "google_project_service" "networks_api" {
   disable_on_destroy = true
 }
 
+resource "google_project_service" "cloudresourcemanager" {
+  project = google_project.project.project_id
+
+  service            = "cloudresourcemanager.googleapis.com"
+  disable_on_destroy = true
+}
+
 resource "google_project_service" "domains_api" {
   project = google_project.project.project_id
 
