@@ -1,4 +1,6 @@
 site_name: ft_IaC Documentation
+theme: bootstrap386
+use_directory_urls: false
 nav:
   - Home: index.md
   - Module:
@@ -9,4 +11,3 @@ nav:
     - module/loadbalancer.md
     - module/monitoring.md
   - About: about.md
-theme: bootstrap386

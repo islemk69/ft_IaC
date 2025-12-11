@@ -73,5 +73,5 @@ module "bucket-doc" {
   project_name = var.gcp_project_name
 
   region       = local.selected_region
-  dir_path = "${path.root}/iac-doc/site"
+  dir_path = "${path.root}/site"
 }
