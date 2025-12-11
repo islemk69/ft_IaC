@@ -1,7 +1,8 @@
-# Module Database
+# Database
 
-Provide a database for the app deployed on our compute instance.
+Provide a database for the app deployed on our compute instance. The database is configured with automatic backup.
 
+<br>
 
 ## Required variables
 
@@ -11,6 +12,7 @@ Provide a database for the app deployed on our compute instance.
 - `region`: the deployment region
 - `vpc_id`: the ID of our VPC
 
+<br>
 
 ## Resources
 
@@ -21,3 +23,4 @@ Provide a database for the app deployed on our compute instance.
 - `database` ([google_sql_database](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/gsql_database)): our SQL database inside our database instace
 
 - `users` ([google_sql_user](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_user)): the database user, used by the app
+

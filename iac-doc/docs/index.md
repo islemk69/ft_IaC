@@ -2,8 +2,11 @@
 
 ft_iac is a school project aimed to discover the world of infrastructure-as-code.
 
+<br>
 
-## The infrastructure-as-code, or the return of config files
+## Infrastructure-as-code
+
+*Or the return of config files*
 
 When creating server, with compute instance, databases, virtual network, on a Cloud Provider, the old way was to do all by hand. 
 Facing the sisyphean effort, one could make a bunch of scripts, if an API was provided, to automate the process.
@@ -16,22 +19,26 @@ Instead of dozens of commands wrote manually by a user, scripts running commands
 This means we declare the state of what we want, and not how to get to this state.
 We then use a tool (in our case, [Terraform](https://developer.hashicorp.com/terraform)) which know the step to create and configure our instances, routers, etc.
 
+<br>
 
 ## Our project
 
 For this project we choose Terraform, for it is the most common IaC tool used in professional world, and Google Cloud because it's free offer is very good for beginning and experimentation.
 
+<br>
 
 ## Architecture 
 
 We use a multi instance architecture with one database. Each instance is managed via a Group Instance Manager, and is behind a proxy and a load balancer.
 The Group Instance Manager is used by an Autoscaler to scale the number of instance based of the current load.
 
-![infrastructure architecture](iac_arch.png)
+![infrastructure architecture](iac_arch-small.png)
 
+<br>
 
 ## Deployment
 
+<br>
 
 ### Prerequisites
 
@@ -40,6 +47,7 @@ The Group Instance Manager is used by an Autoscaler to scale the number of insta
 - `gcloud` CLI authenticated (with `gcloud auth application-default login`)
 - `terraform` installed
 
+<br>
 
 ### Initialization
 
@@ -48,6 +56,7 @@ Initializes the working directory
 terraform init
 ```
 
+<br>
 
 ### Configure Variables
 
@@ -57,22 +66,29 @@ cp terraform.tfvars.example terraform.tfvars
 ```
 
 Fill with Google Cloud info:
+
 - Your billing account: `billing_account`
+
 - Your project name: `gcp_project_name`
 
 Project related configuration:
+
 - The deployment region: `gcp_region`
+
 - The instance type: `machine_type`
+
 - An email address for alerting: `alert_email`
 
+<br>
 
-#### Possibles values:
+#### Possibles values
 
-|  | Description | Values | Default |
-|----------|-------------|---------|---------|
-| `gcp_region` | Deployment Region | `US`, `Europe`, `Asia` | `US` |
-| `machine_type` | Instance Size | `small`, `medium`, `large` | `small` |
+| | | |
+|----------|-----------------|---------|
+| `gcp_region` | Deployment Region  |  `US`, `Europe`, `Asia` |
+| `machine_type` | Instance Size  |  `small`, `medium`, `large` |
 
+<br>
 
 ### Deploy and destroy
 
@@ -96,6 +112,7 @@ terraform destroy
 
 Be careful, *all resources* means the database too.
 
+<br>
 
 ## Code organization
 
@@ -116,9 +133,11 @@ Modules:
 - **network**: the Virtual Private Cloud
 - **project**: the Google Cloud Project, where all resource are created
 
+<br>
 
 ## Development
 
+<br>
 
 ### Cheatsheet
 
@@ -135,6 +154,7 @@ terraform destroy -target module.autoscaling
 For some errors when creation, Terraform will loose the track of some resource. These resources need then to be deleted manually, using  `gcloud`.
 A simple way to clear everything is to delete the Google Cloud Project and delete the `terraform.tfstate{.backup}` file(s)
 
+<br>
 
 ### Providers
 

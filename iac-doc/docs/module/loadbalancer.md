@@ -1,5 +1,8 @@
-# Module Load Balancer
+# Load Balancer
 
+This module allow external traffic and redirect it between our compute instance.
+
+<br>
 
 ## Required variables
 
@@ -10,6 +13,7 @@
 - `domain_name`: the domain to use as entrypoint
 - `instance_group`: the instance group to redirect traffic to
 
+<br>
 
 ## Resources
 

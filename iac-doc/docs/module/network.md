@@ -1,7 +1,8 @@
-# Module Network
+# Network
 
 This module manage the creation of a Virtual Private Cloud and his sub-component.
 
+<br>
 
 ## Required variables
 
@@ -11,6 +12,7 @@ This module manage the creation of a Virtual Private Cloud and his sub-component
 - `region`: the selected region to deploy
 - `subnet_cidr`: a CIDR range for subnet
 
+<br>
 
 ## Resources
 

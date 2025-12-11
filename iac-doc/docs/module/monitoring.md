@@ -1,6 +1,8 @@
-# Module Monitoring
+# Monitoring
 
 This module enable email alerts for monitoring the cloud status.
+
+<br>
 
 ## Required variables
 
@@ -9,6 +11,7 @@ This module enable email alerts for monitoring the cloud status.
 
 - `alert_email`: the email address to send alert
 
+<br>
 
 ## Resources
 

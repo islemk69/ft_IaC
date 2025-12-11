@@ -1,1 +1,12 @@
-site_name: My Docs
+site_name: ft_IaC Documentation
+nav:
+  - Home: index.md
+  - Module:
+    - module/project.md
+    - module/network.md
+    - module/database.md
+    - module/autoscaling.md
+    - module/loadbalancer.md
+    - module/monitoring.md
+  - About: about.md
+theme: bootstrap386
