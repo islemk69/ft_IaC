@@ -64,3 +64,14 @@ module "monitoring" {
 
   alert_email = var.alert_email
 }
+
+module "bucket-doc" {
+  source = "./modules/bucket"
+  depends_on = [module.project]
+
+  project_id = module.project.project_id
+  project_name = var.gcp_project_name
+
+  region       = local.selected_region
+  dir_path = "${path.root}/iac-doc/site"
+}
