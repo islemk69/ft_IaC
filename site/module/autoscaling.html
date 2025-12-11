@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Autoscaling - ft_IaC Documentation</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../index.html">ft_IaC Documentation</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
+            
+            
+                <li >
+                    <a href="../index.html">Home</a>
+                </li>
+            
+            
+            
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Module <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="project.html">Project</a>
+                        </li>
+                    
+                        <li >
+                            <a href="network.html">Network</a>
+                        </li>
+                    
+                        <li >
+                            <a href="database.html">Database</a>
+                        </li>
+                    
+                        <li class="active">
+                            <a href="autoscaling.html">Autoscaling</a>
+                        </li>
+                    
+                        <li >
+                            <a href="loadbalancer.html">Load Balancer</a>
+                        </li>
+                    
+                        <li >
+                            <a href="monitoring.html">Monitoring</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../about.html">About</a>
+                </li>
+            
+            
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                    <li >
+                        <a rel="next" href="database.html">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="loadbalancer.html">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="row">
+                    <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+      
+    
+        <li class="main active"><a href="#autoscaling">Autoscaling</a></li>
+        
+            <li><a href="#required-variables">Required variables</a></li>
+        
+            <li><a href="#resources">Resources</a></li>
+        
+    
+    
+    </ul>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="autoscaling">Autoscaling</h1>
+<p>This Module manage the compute instance. It use an Autoscaler and a Group Instance Manager to create and configure instance based on the current needs.</p>
+<p><br></p>
+<h2 id="required-variables">Required variables</h2>
+<ul>
+<li><code>project_id</code>: project id to attach all resources to</li>
+<li>
+<p><code>project_name</code>: name to compute the resource name from</p>
+</li>
+<li>
+<p><code>region</code>: the deployment region</p>
+</li>
+<li><code>machine_type</code>: what type of instance to create</li>
+<li><code>vpc_id</code>: the VPC ID</li>
+<li>
+<p><code>subnet_id</code>: the subnet ID</p>
+</li>
+<li>
+<p><code>db_host</code>: database IP</p>
+</li>
+<li><code>db_user</code>: database user</li>
+<li><code>db_password</code>: database password</li>
+<li><code>db_name</code>: database name</li>
+</ul>
+<p><br></p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li>
+<p><code>app_template</code> (<a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance_template">google_compute_instance_template</a>): an Instance Template used to create new instance, the Template is based on <code>ubuntu-2204-lts</code> and use a <code>user_data</code> script to install docker and start the app </p>
+</li>
+<li>
+<p><code>app_mig</code> (<a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_instance_group_manager">google_compute_region_instance_group_manager</a>): the Instance Group Manager, responsible to create new instance using the Template</p>
+</li>
+<li>
+<p><code>app_autoscaler</code> (<a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_autoscaler">google_compute_region_autoscaler</a>): the Autoscaler, adjusting the number of instance based on th current load</p>
+</li>
+</ul></div>
+                </div>
+        </div>
+
+    <hr>
+    <footer class="container">
+        
+        <center>Documentation built with <a href="http://www.mkdocs.org">MkDocs</a> and <a href="http://kristopolous.github.io/BOOTSTRA.386">BOOTSTRA.386</a>.</center>
+    </footer>
+        <script src="../../search/main.js"></script>
+    </body>
+</html>

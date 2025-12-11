@@ -27,6 +27,6 @@ variable "mime_types" {
     ".jpg"  = "image/jpeg"
     ".gif"  = "image/gif"
     ".svg"  = "image/svg+xml"
-    ".xml" = "text/xml"
+    ".xml"  = "text/xml"
   }
 }

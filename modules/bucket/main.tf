@@ -1,13 +1,10 @@
 resource "google_storage_bucket" "static_doc" {
-  project       = var.project_id
+  project = var.project_id
 
   name          = "${var.project_id}-bucket-doc"
   location      = var.region
   force_destroy = true
   storage_class = "STANDARD"
-
-
-  # uniform_bucket_level_access = true
 
   website {
     main_page_suffix = "index.html"
@@ -22,9 +19,9 @@ resource "google_storage_bucket_iam_member" "public_rule" {
 }
 
 resource "google_storage_bucket_object" "doc_files_object" {
-  for_each = fileset("${var.dir_path}", "**")
-  name     = each.value
-  source   = "${var.dir_path}/${each.key}"
+  for_each     = fileset("${var.dir_path}", "**")
+  name         = each.value
+  source       = "${var.dir_path}/${each.key}"
   content_type = lookup(var.mime_types, regex("\\.[^.]+$", each.value), "text/plain")
-  bucket   = google_storage_bucket.static_doc.name
+  bucket       = google_storage_bucket.static_doc.name
 }

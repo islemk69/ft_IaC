@@ -1,13 +1,13 @@
-# Ft_IaC - Infrastructure as Code
+# ft_iac - Infrastructure as Code
 
 This project deploys a highly available, scalable web application infrastructure on Google Cloud Platform using Terraform.
 
 
-## 🏗 Architecture
+## Architecture
 
-The infrastructure acts as a transparent layer for the application, ensuring High Availability (HA) and Security.
+The project use an Instance Groupe managed by an Autoscaler to serve the app, plus one database.
 
-![infrastructure architecture](iac_arch.png)
+![infrastructure architecture](docs/iac_arch.png)
 
 
 ### Key Components
@@ -21,22 +21,32 @@ The infrastructure acts as a transparent layer for the application, ensuring Hig
 
 ## Usage
 
+
 ### Prerequisites
 - Google Cloud Platform account with billing enabled
 - `gcloud` CLI installed and authenticated (`gcloud auth application-default login`)
 - `terraform` installed
-- `mkdocs` installed
+- `pip` installed (only if you intend to rebuild the doc)
+
 
 ### Documentation
-Build and serve doc locally using mkdocs
+
+The doc is accessible when the app is deployed, or can be served locally
+
+Build the docs
 ```bash
-cd iac-doc
 pip install -r requirements.txt
 mkdocs build
+```
+
+Serve locally with
+```bash
 mkdocs serve
 ```
 
+
 ### Configuration
+
 1. **Initialize** the project:
    ```bash
    terraform init
@@ -64,18 +74,16 @@ mkdocs serve
 | `machine_type` | Instance Size | `small`, `medium`, `large` | `small` |
 
 
-## 🛡 Security & Compliance
+## Security & Compliance
 
-- **Secrets Management**: `terraform.tfvars` is git-ignored. Database passwords are changed via variables, never hardcoded.
+- **Secrets Management**: `terraform.tfvars` is git-ignored. Database passwords are random generated.
 - **Network Isolation**: Database and App instances have **no public IPs**.
 - **Least Privilege**: Application connects to DB via specific user credentials.
 
 
-## 🧹 Cleanup
+## Cleanup
 
 To destroy the infrastructure and stop billing:
 ```bash
 terraform destroy
 ```
-
-*Note: If `service_networking_connection` fails to delete due to dependencies, run `terraform state rm google_service_networking_connection.private_vpc_connection` and try again.*

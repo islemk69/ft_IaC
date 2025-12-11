@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Monitoring - ft_IaC Documentation</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../index.html">ft_IaC Documentation</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
+            
+            
+                <li >
+                    <a href="../index.html">Home</a>
+                </li>
+            
+            
+            
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Module <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li >
+                            <a href="project.html">Project</a>
+                        </li>
+                    
+                        <li >
+                            <a href="network.html">Network</a>
+                        </li>
+                    
+                        <li >
+                            <a href="database.html">Database</a>
+                        </li>
+                    
+                        <li >
+                            <a href="autoscaling.html">Autoscaling</a>
+                        </li>
+                    
+                        <li >
+                            <a href="loadbalancer.html">Load Balancer</a>
+                        </li>
+                    
+                        <li class="active">
+                            <a href="monitoring.html">Monitoring</a>
+                        </li>
+                    
+                    </ul>
+                </li>
+            
+            
+            
+                <li >
+                    <a href="../about.html">About</a>
+                </li>
+            
+            
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                    <li >
+                        <a rel="next" href="loadbalancer.html">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../about.html">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="row">
+                    <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+      
+    
+        <li class="main active"><a href="#monitoring">Monitoring</a></li>
+        
+            <li><a href="#required-variables">Required variables</a></li>
+        
+            <li><a href="#resources">Resources</a></li>
+        
+    
+    
+    </ul>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="monitoring">Monitoring</h1>
+<p>This module enable email alerts for monitoring the cloud status.</p>
+<p><br></p>
+<h2 id="required-variables">Required variables</h2>
+<ul>
+<li><code>project_id</code>: project id to attach all resources to</li>
+<li>
+<p><code>project_name</code>: name to compute the resource name from</p>
+</li>
+<li>
+<p><code>alert_email</code>: the email address to send alert</p>
+</li>
+</ul>
+<p><br></p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li>
+<p><code>email</code> (<a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/monitoring_notification_channel">google_monitoring_notification_channel</a>): a notification channel via email</p>
+</li>
+<li>
+<p><code>high_cpu</code> (<a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/monitoring_alert_policy">google_monitoring_alert_policy</a>): an alert policy to trigger alert when compute instance CPU usage hit a threshold</p>
+</li>
+</ul></div>
+                </div>
+        </div>
+
+    <hr>
+    <footer class="container">
+        
+        <center>Documentation built with <a href="http://www.mkdocs.org">MkDocs</a> and <a href="http://kristopolous.github.io/BOOTSTRA.386">BOOTSTRA.386</a>.</center>
+    </footer>
+        <script src="../../search/main.js"></script>
+    </body>
+</html>
