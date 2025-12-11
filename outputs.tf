@@ -12,7 +12,7 @@ output "public_ip_http" {
   value       = module.loadbalancer.lb_ip_http
 }
 
-output "doc_url" {
-  description = "The url of the doc bucket"
-  value       = module.bucket-doc.url
-}
+# output "doc_url" {
+#   description = "The url of the doc bucket"
+#   value       = module.bucket-doc.url
+# }
