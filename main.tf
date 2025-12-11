@@ -23,8 +23,9 @@ module "database" {
   project_id   = module.project.project_id
   project_name = var.gcp_project_name
 
-  region = local.selected_region
-  vpc_id = module.network.vpc_id
+  region      = local.selected_region
+  vpc_id      = module.network.vpc_id
+  db_password = var.db_password
 }
 
 module "autoscaling" {
@@ -55,6 +56,8 @@ module "loadbalancer" {
   domain_name    = var.domain_name
   instance_group = module.autoscaling.instance_group
 }
+
+
 
 
 module "monitoring" {

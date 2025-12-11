@@ -19,7 +19,6 @@ resource "google_compute_health_check" "hc" {
 }
 
 resource "google_compute_backend_service" "backend" {
-  project               = var.project_id
   project = var.project_id
 
   name                  = "${var.project_name}-backend-global"
