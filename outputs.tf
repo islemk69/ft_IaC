@@ -14,5 +14,5 @@ output "doc_url" {
 
 output "url" {
   description = "The app url"
-  value       = module.loadbalancer.url
+  value       = module.network.url
 }

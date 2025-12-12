@@ -8,14 +8,13 @@ variable "project_name" {
   type        = string
 }
 
-variable "domain_name" {
-  description = "Domain name"
+variable "global_address" {
+  description = "IP address"
   type        = string
-  default     = "sanitraq.fr"
 }
 
-variable "subdomain" {
-  description = "Subdomain"
+variable "cert_id" {
+  description = "SSL Certificate ID"
   type        = string
 }
 

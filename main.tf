@@ -14,6 +14,8 @@ module "network" {
 
   region      = local.selected_region
   subnet_cidr = "10.0.1.0/24"
+  domain_name    = var.domain_name
+  subdomain      = var.subdomain
 }
 
 module "database" {
@@ -52,8 +54,8 @@ module "loadbalancer" {
   project_id   = module.project.project_id
   project_name = var.gcp_project_name
 
-  domain_name    = var.domain_name
-  subdomain      = var.subdomain
+  global_address = module.network.global_address
+  cert_id        = module.network.cert_id
   instance_group = module.autoscaling.instance_group
 }
 

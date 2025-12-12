@@ -18,3 +18,13 @@ variable "subnet_cidr" {
   type        = string
   default     = "10.0.1.0/24"
 }
+
+variable "domain_name" {
+  description = "Domain name"
+  type        = string
+}
+
+variable "subdomain" {
+  description = "Subdomain"
+  type        = string
+}

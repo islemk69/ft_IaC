@@ -63,3 +63,27 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
 }
+
+resource "google_compute_global_address" "default" {
+  project      = var.project_id
+  name         = "${var.project_name}-ip"
+  address_type = "EXTERNAL"
+  ip_version   = "IPV4"
+}
+
+resource "ovh_domain_zone_record" "dns_record_sub" {
+  zone      = var.domain_name
+  subdomain = var.subdomain
+  fieldtype = "A"
+  target    = google_compute_global_address.default.address
+}
+
+resource "google_compute_managed_ssl_certificate" "sub_cert" {
+  project = var.project_id
+
+  name = "${var.project_name}-cert-sub"
+
+  managed {
+    domains = ["${var.subdomain}.${var.domain_name}"]
+  }
+}

@@ -13,3 +13,15 @@ output "subnet_id" {
 output "subnet_name" {
   value = google_compute_subnetwork.subnet.name
 }
+
+output "global_address" {
+  value = google_compute_global_address.default.address
+}
+
+output "url" {
+  value = "https://${var.subdomain}.${var.domain_name}"
+}
+
+output "cert_id" {
+  value = google_compute_managed_ssl_certificate.sub_cert.id
+}
