@@ -19,6 +19,6 @@ terraform.rc
 
 # Misc 
 tmp/
-# site/
 .vscode
 *.subject.pdf
+*.token

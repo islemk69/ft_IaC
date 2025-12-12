@@ -9,7 +9,13 @@ variable "project_name" {
 }
 
 variable "domain_name" {
-  description = "Domain name for SSL certificate"
+  description = "Domain name"
+  type        = string
+  default     = "sanitraq.fr"
+}
+
+variable "subdomain" {
+  description = "Subdomain"
   type        = string
 }
 

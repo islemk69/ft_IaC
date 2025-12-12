@@ -53,6 +53,7 @@ module "loadbalancer" {
   project_name = var.gcp_project_name
 
   domain_name    = var.domain_name
+  subdomain      = var.subdomain
   instance_group = module.autoscaling.instance_group
 }
 
@@ -60,18 +61,17 @@ module "monitoring" {
   source     = "./modules/monitoring"
   depends_on = [module.project]
 
-  project_id = module.project.project_id
-
+  project_id  = module.project.project_id
   alert_email = var.alert_email
 }
 
 module "bucket-doc" {
-  source = "./modules/bucket"
+  source     = "./modules/bucket"
   depends_on = [module.project]
 
-  project_id = module.project.project_id
+  project_id   = module.project.project_id
   project_name = var.gcp_project_name
 
-  region       = local.selected_region
+  region   = local.selected_region
   dir_path = "${path.root}/site"
 }

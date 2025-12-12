@@ -24,7 +24,8 @@ The project use an Instance Groupe managed by an Autoscaler to serve the app, pl
 
 ### Prerequisites
 - Google Cloud Platform account with billing enabled
-- `gcloud` CLI installed and authenticated (`gcloud auth application-default login`)
+- `gcloud` CLI installed
+- `gcloud` CLI authenticated with `gcloud auth application-default login`
 - `terraform` installed
 - `pip` installed (only if you intend to rebuild the doc)
 
@@ -45,7 +46,7 @@ mkdocs serve
 ```
 
 
-### Configuration
+### Deployment
 
 1. **Initialize** the project:
    ```bash

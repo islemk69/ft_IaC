@@ -1,7 +1,7 @@
 resource "google_storage_bucket" "static_doc" {
   project = var.project_id
 
-  name          = "${var.project_name}-doc"
+  name          = "doc-${var.project_name}"
   location      = var.region
   force_destroy = true
   storage_class = "STANDARD"

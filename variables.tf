@@ -35,3 +35,23 @@ variable "domain_name" {
   description = "Le nom de domaine"
   type        = string
 }
+
+variable "subdomain" {
+  description = "Subdomain"
+  type        = string
+}
+
+variable "ovh_app_key" {
+  description = "OVH App key"
+  type        = string
+}
+
+variable "ovh_app_secret" {
+  description = "OVH App secret"
+  type        = string
+}
+
+variable "ovh_consumer_key" {
+  description = "OVH Consumer key"
+  type        = string
+}
