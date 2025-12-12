@@ -7,11 +7,6 @@ output "public_ip" {
   value       = module.loadbalancer.lb_ip
 }
 
-output "public_ip_http" {
-  description = "The public IP of the Load Balancer"
-  value       = module.loadbalancer.lb_ip_http
-}
-
 output "doc_url" {
   description = "The url of the doc bucket"
   value       = module.bucket-doc.url
