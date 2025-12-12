@@ -23,7 +23,7 @@ This module allow external traffic and redirect it between our compute instance.
 
 - `lb` ([google_compute_url_map](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_url_map)): url map to route traffic from proxy to load balancer
 
-- `proxy` ([google_compute_target_http_proxy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_http_proxy)): a proxy sitting before the load balancer
+- `proxy` ([google_compute_target_http_proxy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_http_proxy)): a HTTP proxy sitting before the load balancer, it only redirect to HTTPS
 
 - `http` ([google_compute_global_forwarding_rule](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule)): a forwarding rule to accept HTTP request and forward them to proxy
 
@@ -32,3 +32,5 @@ This module allow external traffic and redirect it between our compute instance.
 - `proxy` ([google_compute_target_https_proxy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_https_proxy)): a HTTPS proxy sitting before the load balancer
 
 - `https` ([google_compute_global_forwarding_rule](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule)): a forwarding rule to accept HTTPS request and forward them to proxy
+
+- `dns_record_sub` ([ovh_domain_zone_record](https://registry.terraform.io/providers/ovh/ovh/latest/docs/resources/domain_zone_record)): the domain name record
