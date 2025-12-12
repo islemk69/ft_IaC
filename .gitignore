@@ -5,9 +5,9 @@
 *.tfvars
 *.tfvars.json
 
-# State files
-# *.tfstate
-# *.tfstate.*
+#State files
+*.tfstate
+*.tfstate.*
 
 # Crash log files (if you run Terraform locally)
 crash.log
