@@ -3,5 +3,5 @@ output "name" {
 }
 
 output "url" {
-  value = "http://${google_storage_bucket.static_doc.name}.storage.googleapis.com/index.html"
+  value = "https://${google_storage_bucket.static_doc.name}.storage.googleapis.com/index.html"
 }

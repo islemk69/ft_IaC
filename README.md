@@ -31,15 +31,15 @@ The project use an Instance Groupe managed by an Autoscaler to serve the app, pl
 
 ### Documentation
 
-The doc is accessible when the app is deployed, or can be served locally
+The doc is already built and will be accessible when the app is deployed, or can be served locally with `mkdocs`.
 
-Build the docs
+(optional) Build the docs:
 ```bash
 pip install -r requirements.txt
 mkdocs build
 ```
 
-Serve locally with
+Serve locally with:
 ```bash
 mkdocs serve
 ```

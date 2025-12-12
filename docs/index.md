@@ -8,6 +8,8 @@ ft_iac is a school project aimed to discover the world of infrastructure-as-code
 
 *Or the return of config files*
 
+<br>
+
 When creating server, with compute instance, databases, virtual network, on a Cloud Provider, the old way was to do all by hand. 
 Facing the sisyphean effort, one could make a bunch of scripts, if an API was provided, to automate the process.
 But these approach are error prone, slow and need a precise comprehension of the Cloud Provider internals.
