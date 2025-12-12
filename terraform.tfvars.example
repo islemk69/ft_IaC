@@ -1,4 +1,4 @@
-billing_account  = "billing_account"
+billing_account  = ""
 gcp_project_name = "ft-iac-quatre"
 gcp_region       = "US"
 machine_type     = "small"
