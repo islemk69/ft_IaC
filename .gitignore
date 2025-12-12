@@ -5,7 +5,7 @@
 *.tfvars
 *.tfvars.json
 
-#State files
+# State files
 *.tfstate
 *.tfstate.*
 
