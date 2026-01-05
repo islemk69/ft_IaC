@@ -1,0 +1,33 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  GCP_PROJECT_ID: "ft-iac-deux-39878"
+  GCP_REGION: "us-central1"      
+  MIG_NAME: "ft-iac-deux-mig"           
+
+build_push_docker:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker build -t $DOCKER_IMAGE_NAME:latest .
+    - docker push $DOCKER_IMAGE_NAME:latest
+  only:
+    - main
+
+deploy_to_gcp:
+  stage: deploy
+  image: google/cloud-sdk:latest
+  needs: [build_push_docker] 
+  script:
+    - gcloud auth activate-service-account --key-file $GCP_SERVICE_KEY
+    - gcloud config set project $GCP_PROJECT_ID
+    
+    - echo "Déclenchement du remplacement des instances..."
+    - gcloud compute instance-groups managed rolling-action replace $MIG_NAME --region=$GCP_REGION --max-surge=3 --max-unavailable=0
+  only:
+    - main
