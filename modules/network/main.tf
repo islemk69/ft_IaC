@@ -78,9 +78,9 @@ data "cloudflare_zone" "zone" {
 resource "cloudflare_record" "dns_record_sub" {
   zone_id = data.cloudflare_zone.zone.id
   name    = var.subdomain
-  value   = google_compute_global_address.default.address
+  content = google_compute_global_address.default.address
   type    = "A"
-  proxied = true
+  proxied = false
 }
 
 resource "google_compute_managed_ssl_certificate" "sub_cert" {

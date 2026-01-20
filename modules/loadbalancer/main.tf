@@ -47,7 +47,7 @@ resource "google_compute_target_http_proxy" "proxy" {
   project = var.project_id
 
   name    = "${var.project_name}-proxy-global"
-  url_map = google_compute_url_map.https_redirect.id
+  url_map = google_compute_url_map.lb.id
 }
 
 resource "google_compute_global_forwarding_rule" "http" {
