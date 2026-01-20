@@ -1,0 +1,8 @@
+billing_account  = "your_billing_account"
+gcp_project_name = "your_project_name"
+gcp_region       = "your_region"
+machine_type     = "your_machine_type"
+alert_email      = "your_email_address"
+domain_name      = "your_domain_name"
+subdomain        = "your_beautiful_login_for_exemple"
+cloudflare_api_token = "your_secret_key"
