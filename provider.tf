@@ -11,9 +11,9 @@ terraform {
       version = ">= 3.0"
     }
 
-    ovh = {
-      source  = "ovh/ovh"
-      version = ">= 2.10"
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
     }
   }
 }
@@ -22,9 +22,6 @@ provider "google" {
   region = local.selected_region
 }
 
-provider "ovh" {
-  endpoint           = "ovh-eu"
-  application_key    = var.ovh_app_key
-  application_secret = var.ovh_app_secret
-  consumer_key       = var.ovh_consumer_key
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }

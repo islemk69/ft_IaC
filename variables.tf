@@ -41,17 +41,8 @@ variable "subdomain" {
   type        = string
 }
 
-variable "ovh_app_key" {
-  description = "OVH App key"
+variable "cloudflare_api_token" {
+  description = "Cloudflare API Token"
   type        = string
-}
-
-variable "ovh_app_secret" {
-  description = "OVH App secret"
-  type        = string
-}
-
-variable "ovh_consumer_key" {
-  description = "OVH Consumer key"
-  type        = string
+  sensitive   = true
 }

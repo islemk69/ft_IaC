@@ -71,11 +71,16 @@ resource "google_compute_global_address" "default" {
   ip_version   = "IPV4"
 }
 
-resource "ovh_domain_zone_record" "dns_record_sub" {
-  zone      = var.domain_name
-  subdomain = var.subdomain
-  fieldtype = "A"
-  target    = google_compute_global_address.default.address
+data "cloudflare_zone" "zone" {
+  name = var.domain_name
+}
+
+resource "cloudflare_record" "dns_record_sub" {
+  zone_id = data.cloudflare_zone.zone.id
+  name    = var.subdomain
+  value   = google_compute_global_address.default.address
+  type    = "A"
+  proxied = true
 }
 
 resource "google_compute_managed_ssl_certificate" "sub_cert" {
